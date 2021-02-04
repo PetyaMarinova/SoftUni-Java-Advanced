@@ -1,0 +1,59 @@
+package Ex07Google;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        String input = scanner.nextLine();
+
+        Map<String, Person> allPeople = new LinkedHashMap<>();
+
+        while (!input.equals("End")) {
+            String[] tokens = input.split("\\s+");
+            String namePerson = tokens[0];
+
+            if (!allPeople.containsKey(namePerson)) {
+                Person person = new Person(namePerson);
+                allPeople.put(namePerson, person);
+            }
+            switch (tokens[1]) {
+                case "company":
+                    String companyName = tokens[2];
+                    String department = tokens[3];
+                    double salary = Double.parseDouble(tokens[4]);
+                    Company company = new Company(companyName, department, salary);
+                    allPeople.get(namePerson).setCompany(company);
+                    break;
+                case "car":
+                    String carModel = tokens[2];
+                    int carSpeed = Integer.parseInt(tokens[3]);
+                    Car car = new Car(carModel, carSpeed);
+                    allPeople.get(namePerson).setCar(car);
+                    break;
+                case "pokemon":
+                    String pokemonName = tokens[2];
+                    String pokemonType = tokens[3];
+                    Pokemon pokemon = new Pokemon(pokemonName, pokemonType);
+                    allPeople.get(namePerson).addPokemon(pokemon);
+                    break;
+                case "parents":
+                    String parentName = tokens[2];
+                    String parentBirthday = tokens[3];
+                    Parent parent = new Parent(parentName, parentBirthday);
+                    allPeople.get(namePerson).addParent(parent);
+                    break;
+                case "children":
+                    String nameChild = tokens[2];
+                    String childBirthday = tokens[3];
+                    Child child = new Child(nameChild, childBirthday);
+                    allPeople.get(namePerson).addChild(child);
+                    break;
+
+            }
+            input = scanner.nextLine();
+        }
+        String nameToPrintInformation = scanner.nextLine();
+        System.out.println(allPeople.get(nameToPrintInformation));
+    }
+}
