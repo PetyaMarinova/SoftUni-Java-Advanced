@@ -1,0 +1,20 @@
+package Ex05GenericCountMethodStrings;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Box<T extends Comparable<T>> {
+    private List<T> elements;
+
+    public Box(){
+        this.elements = new ArrayList<>();
+    }
+    public long countElementsGreaterThan(T compareTo){
+        return elements.stream().filter(e -> e.compareTo(compareTo) > 0).count();
+    }
+    public void addElement(T element){
+        this.elements.add(element);
+    }
+
+
+}
