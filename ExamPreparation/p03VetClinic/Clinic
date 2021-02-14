@@ -1,0 +1,59 @@
+package vetClinic;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Clinic {
+    private int capacity;
+    private List<Pet> pets;
+
+    public Clinic(int capacity) {
+        this.capacity = capacity;
+        this.pets = new ArrayList<>();
+    }
+    public void add(Pet pet){
+        if (this.capacity > pets.size()){
+            this.pets.add(pet);
+        }
+    }
+    public boolean remove(String name){
+        boolean removed = false;
+        for (Pet pet : pets) {
+            if (pet.getName().equals(name)){
+                pets.remove(pet);
+                removed = true;
+                break;
+            }
+        }
+        return removed;
+    }
+    public Pet getPet(String name, String owner){
+        Pet currentPet = null;
+        for (Pet pet : pets) {
+            if (pet.getName().equals(name) && pet.getOwner().equals(owner)){
+                currentPet = pet;
+            }
+        }
+        return currentPet;
+    }
+    public Pet getOldestPet(){
+        Pet oldestPet = null;
+        for (Pet pet : pets) {
+            if (oldestPet == null || pet.getAge() > oldestPet.getAge()){
+                oldestPet = pet;
+            }
+        }
+        return oldestPet;
+    }
+    public int getCount(){
+        return this.pets.size();
+    }
+    public String getStatistics(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("The clinic has the following patients:").append(System.lineSeparator());
+        for (Pet pet : pets) {
+            sb.append(pet.getName()).append(" ").append(pet.getOwner()).append(System.lineSeparator());
+        }
+       return sb.toString().trim();
+    }
+}
