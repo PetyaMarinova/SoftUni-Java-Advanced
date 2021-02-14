@@ -1,0 +1,88 @@
+package po1Cooking;
+
+import javax.swing.tree.TreeCellRenderer;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] liquids = readArray(scanner);
+        int[] ingredients = readArray(scanner);
+
+        ArrayDeque<Integer> queueLiquids = new ArrayDeque<>();
+        ArrayDeque<Integer> stackIngredients = new ArrayDeque<>();
+
+        for (int i = 0; i < liquids.length ; i++) {
+            queueLiquids.add(liquids[i]);
+        }
+        for (int i = 0; i < ingredients.length ; i++) {
+            stackIngredients.push(ingredients[i]);
+        }
+        Map<String,Integer> allDishes = new TreeMap<>();
+        putEachDish("Bread",allDishes);
+        putEachDish("Cake",allDishes);
+        putEachDish("Fruit Pie",allDishes);
+        putEachDish("Pastry",allDishes);
+
+
+        while(!queueLiquids.isEmpty() && !stackIngredients.isEmpty()){
+            int firstLiquid = queueLiquids.poll();
+            int lastIngredient = stackIngredients.pop();
+            int result = firstLiquid + lastIngredient;
+            if (result == 25){
+                allDishes.put("Bread",allDishes.get("Bread") + 1);
+
+            } else if (result == 50){
+                allDishes.put("Cake",allDishes.get("Cake") + 1);
+
+            } else if (result == 75){
+                allDishes.put("Pastry",allDishes.get("Pastry") + 1);
+
+            } else if (result == 100){
+                allDishes.put("Fruit Pie",allDishes.get("Fruit Pie") + 1);
+
+            } else {
+                int increasedIngredient = lastIngredient + 3;
+                stackIngredients.push(increasedIngredient);
+            }
+        }
+        if (allDishes.get("Bread") >= 1 && allDishes.get("Pastry") >= 1 &&
+                allDishes.get("Fruit Pie") >= 1 && allDishes.get("Cake") >= 1){
+            System.out.println("Wohoo! You succeeded in cooking all the food!");
+        } else {
+            System.out.println("Ugh, what a pity! You didn't have enough materials to to cook everything.");
+        }
+        if (queueLiquids.isEmpty()){
+            System.out.println("Liquids left: none");
+        } else {
+            System.out.printf("Liquids left: ");
+            String elementInfo = queueLiquids
+                    .stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(", "));
+            System.out.println(elementInfo);
+        }
+        if (stackIngredients.isEmpty()){
+            System.out.println("Ingredients left: none");
+        } else {
+            System.out.printf("Ingredients left: ");
+            String elementInfo = stackIngredients
+                    .stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(", "));
+            System.out.println(elementInfo);
+        }
+        for (Map.Entry<String, Integer> entry : allDishes.entrySet()) {
+            System.out.printf("%s: %d%n",entry.getKey(), entry.getValue());
+        }
+    }
+
+    private static void putEachDish(String dish, Map<String, Integer> allDishes) {
+        allDishes.put(dish,0);
+    }
+
+    private static int[] readArray(Scanner scanner) {
+        return Arrays.stream(scanner.nextLine().split("\\s+")).mapToInt(Integer::parseInt).toArray();
+    }
+}
