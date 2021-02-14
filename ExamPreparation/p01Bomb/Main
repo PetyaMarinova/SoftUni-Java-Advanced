@@ -1,0 +1,77 @@
+package p01Bomb;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class P01Bomb {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        ArrayDeque<Integer> effectsQueue = new ArrayDeque<>();
+        ArrayDeque<Integer> casingsStack = new ArrayDeque<>();
+
+        int[] effectsInput = Arrays.stream(scanner.nextLine().split(", ")).mapToInt(Integer::parseInt).toArray();
+        int[] casingsInput = Arrays.stream(scanner.nextLine().split(", ")).mapToInt(Integer::parseInt).toArray();
+
+        for (int i = 0; i < effectsInput.length ; i++) {
+            effectsQueue.add(effectsInput[i]);
+        }
+        for (int i = 0; i < casingsInput.length ; i++) {
+            casingsStack.push(casingsInput[i]);
+        }
+        Map<String, Integer> allBombs = new TreeMap<>();
+        allBombs.put("Datura Bombs",0);
+        allBombs.put("Cherry Bombs", 0);
+        allBombs.put("Smoke Decoy Bombs", 0);
+
+        while(!effectsQueue.isEmpty() && !casingsStack.isEmpty()){
+            if (isEqualToThree(allBombs)){
+                System.out.println("Bene! You have successfully filled the bomb pouch!");
+                break;
+            }
+            int firstEffect = effectsQueue.peek();
+            int firstCasing = casingsStack.pop();
+            if (firstEffect + firstCasing == 40){
+                allBombs.put("Datura Bombs",allBombs.get("Datura Bombs") + 1);
+                effectsQueue.poll();
+
+            } else if (firstCasing + firstEffect == 60){
+                allBombs.put("Cherry Bombs",allBombs.get("Cherry Bombs") + 1);
+                effectsQueue.poll();
+
+            } else if (firstCasing + firstEffect == 120){
+                allBombs.put("Smoke Decoy Bombs",allBombs.get("Smoke Decoy Bombs") + 1);
+                effectsQueue.poll();
+
+            } else {
+                casingsStack.push(firstCasing - 5);
+            }
+        }
+        if (!isEqualToThree(allBombs)){
+            System.out.println("You don't have enough materials to fill the bomb pouch.");
+        }
+        if (effectsQueue.isEmpty()){
+            System.out.println("Bomb Effects: empty");
+        } else {
+            System.out.printf("Bomb Effects: ");
+            String effect = effectsQueue.stream().map(String::valueOf).collect(Collectors.joining(", "));
+            System.out.println(effect);
+        }
+        if (casingsStack.isEmpty()){
+            System.out.println("Bomb Casings: empty");
+        } else {
+            System.out.printf("Bomb Casings: ");
+            String casing = casingsStack.stream().map(String::valueOf).collect(Collectors.joining(", "));
+            System.out.println(casing);
+        }
+        for (Map.Entry<String, Integer> entry : allBombs.entrySet()) {
+            System.out.printf("%s: %d%n",entry.getKey(), entry.getValue());
+        }
+    }
+
+    private static boolean isEqualToThree(Map<String, Integer> allBombs) {
+        return allBombs.get("Datura Bombs") >= 3
+        && allBombs.get("Cherry Bombs") >= 3
+        && allBombs.get("Smoke Decoy Bombs") >= 3;
+    }
+}
