@@ -1,0 +1,62 @@
+package parking;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Parking {
+    private final List<Car> cars;
+    private final String type;
+    private final int capacity;
+
+    public Parking(String type, int capacity){
+        this.type = type;
+        this.capacity = capacity;
+        cars = new ArrayList<>();
+    }
+    public void add(Car car){
+        if (this.capacity > this.cars.size()){
+            this.cars.add(car);
+        }
+    }
+    public boolean remove(String manufacturer, String model){
+        for (Car car : cars) {
+            if (car.getManufacturer().equals(manufacturer) &&
+            car.getModel().equals(model)){
+                cars.remove(car);
+                return true;
+            }
+        }
+        return false;
+    }
+    public Car getLatestCar(){
+        Car carLatest = null;
+        for (Car car : cars) {
+            if (carLatest == null || car.getYear() > carLatest.getYear()){
+                carLatest = car;
+            }
+        }
+        return carLatest;
+    }
+    public Car getCar(String manufacturer, String model){
+        Car getCar = null;
+        for (Car car : cars) {
+            if (car.getManufacturer().equals(manufacturer) && car.getModel().equals(model)){
+                getCar = car;
+            }
+        }
+        return getCar;
+    }
+    public int getCount(){
+        return this.cars.size();
+    }
+
+
+    public String getStatistics() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("The cars are parked in %s:",this.type)).append(System.lineSeparator());
+        for (Car car : cars) {
+            sb.append(car.toString()).append(System.lineSeparator());
+        }
+        return sb.toString().trim();
+    }
+}
