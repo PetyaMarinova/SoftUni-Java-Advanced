@@ -1,0 +1,98 @@
+package po2GardenMatrix;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        int[] input = readArray(scanner);
+        int n = input[0];
+        int m = input[1];
+
+        int[][] matrix = new int[n][m];
+
+        for (int row = 0; row < n; row++) {
+            int[] line = new int[m];
+            for (int col = 0; col < m ; col++) {
+                line[col] = 0;
+            }
+            matrix[row] = line;
+        }
+
+        String command = scanner.nextLine();
+        while(!command.equals("Bloom Bloom Plow")){
+            String[] positionsNewFlower = command.split("\\s+");
+            int newRow = Integer.parseInt(positionsNewFlower[0]);
+            int newCol = Integer.parseInt(positionsNewFlower[1]);
+            if (!isOutOfBounds(matrix, newRow, newCol)){
+                matrix[newRow][newCol] = -1;
+            } else {
+                System.out.println("Invalid coordinates.");
+            }
+            command = scanner.nextLine();
+        }
+        List<int[]> positionsAllFlowers = new ArrayList<>();
+
+        for (int row = 0; row < matrix.length ; row++) {
+            for (int col = 0; col <matrix[row].length ; col++) {
+                if (matrix[row][col] == -1){
+                    matrix[row][col] = 0;
+                    int[] currentFlower = new int[2];
+                    currentFlower[0] = row;
+                    currentFlower[1] = col;
+                    positionsAllFlowers.add(currentFlower);
+                }
+            }
+        }
+        for (int[] flower : positionsAllFlowers) {
+            matrix[flower[0]][flower[1]] = matrix[flower[0]][flower[1]] + 1;
+            int currentRow = flower[0];
+            int currentCol = flower[1];
+            allFlowersBlooms(matrix,currentRow, currentCol);
+        }
+
+        printMatrix(matrix);
+    }
+
+    private static void allFlowersBlooms(int[][] matrix, int currentRow, int currentCol) {
+        for (int row = 0; row < currentRow  ; row++) {
+            matrix[row][currentCol] = matrix[row][currentCol] + 1;
+        }
+        for (int row = currentRow + 1; row < matrix.length ; row++) {
+            matrix[row][currentCol] = matrix[row][currentCol] + 1;
+        }
+        for (int col = 0; col < currentCol ; col++) {
+            matrix[currentRow][col] = matrix[currentRow][col] + 1;
+        }
+        for (int col = currentCol + 1; col < matrix[currentRow].length ; col++) {
+            matrix[currentRow][col] = matrix[currentRow][col] + 1;
+        }
+    }
+
+    private static int[] readArray(Scanner scanner) {
+        return Arrays.stream(scanner.nextLine().split("\\s+")).mapToInt(Integer::parseInt).toArray();
+    }
+
+    public static boolean isOutOfBounds(int[][] matrix, int newRowFlower, int newColFlower){
+        boolean isOut = true;
+        if (newRowFlower >= 0 && newRowFlower < matrix.length && newColFlower >= 0 && newColFlower < matrix[newRowFlower].length){
+            isOut = false;
+        }
+        return isOut;
+    }
+    public static void printMatrix(int[][] matrix){
+        StringBuilder sb = new StringBuilder();
+        for (int row = 0; row < matrix.length ; row++) {
+            for (int col = 0; col < matrix[row].length ; col++) {
+                sb.append(matrix[row][col]).append(" ");
+            }
+            sb.append(System.lineSeparator());
+        }
+        System.out.println(sb.toString().trim());
+    }
+}
