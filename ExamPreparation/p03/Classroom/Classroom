@@ -1,0 +1,104 @@
+package classroom;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+public class Classroom {
+    private List<Student> allStudents;
+    private int capacity;
+
+    public Classroom(int capacity){
+        this.capacity = capacity;
+        this.allStudents = new ArrayList<>();
+    }
+
+    public List<Student> getStudents() {
+        return allStudents;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+    public int getStudentCount(){
+        return allStudents.size();
+    }
+
+    public String registerStudent(Student student){
+        String output = null;
+        for (Student currentStudent : allStudents) {
+            if (currentStudent.getFirstName().equals(student.getFirstName())
+                    && currentStudent.getLastName().equals(student.getLastName())) {
+                output = "Student is already in the classroom";
+            }
+        }
+                if (this.capacity > this.allStudents.size()){
+                    this.allStudents.add(student);
+                    output = String.format("Added student %s %s",student.getFirstName(), student.getLastName());
+                } else {
+                    output = "No seats in the classroom";
+                }
+        return output;
+    }
+    public String dismissStudent(Student student){
+        boolean isFound = false;
+        String output;
+        for (Student current : allStudents) {
+            if (current.getFirstName().equals(student.getFirstName())
+            && current.getLastName().equals(student.getLastName())){
+                isFound = true;
+                allStudents.remove(current);
+                break;
+            }
+        }
+        if (isFound){
+            return String.format("Removed student %s %s",student.getFirstName(),student.getLastName());
+        } else {
+            return "Student not found";
+        }
+    }
+    public String getSubjectInfo(String subject){
+        Map<String, String> subjectStudents = new LinkedHashMap<>();
+        for (Student student : this.allStudents) {
+            if (student.getBestSubject().equals(subject)){
+                subjectStudents.put(student.getFirstName(), student.getLastName());
+            }
+        }
+        if (subjectStudents.isEmpty()){
+            return "No students enrolled for the subject";
+        } else {
+            StringBuilder sb = new StringBuilder();
+            sb.append(String.format("Subject: %s", subject)).append(System.lineSeparator())
+                    .append("Student:").append(System.lineSeparator());
+            for (Map.Entry<String, String> entry : subjectStudents.entrySet()) {
+                sb.append(entry.getKey()).append(" ").append(entry.getValue()).append(System.lineSeparator());
+            }
+            return sb.toString().trim();
+        }
+    }
+
+    public String getStudent(String firstName, String lastName){
+        String output = null;
+        for (Student student : allStudents) {
+            if (student.getFirstName().equals(firstName)
+            && student.getLastName().equals(lastName)){
+                output =  String.format("Student: First Name = %s, Last Name = %s, Subject = %s",
+                        firstName, lastName, student.getBestSubject());
+            }
+        }
+        return output;
+    }
+    public String getStatistics(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Classroom size: %d",this.allStudents.size()))
+                .append(System.lineSeparator());
+        for (Student student : allStudents) {
+            sb.append(String.format("==Student: First Name= %s , Last Name= %s , Best Subject= %s",
+                    student.getFirstName(), student.getLastName(), student.getBestSubject()))
+                    .append(System.lineSeparator());
+        }
+        return sb.toString().trim();
+    }
+
+}
