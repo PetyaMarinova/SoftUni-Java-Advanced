@@ -1,0 +1,53 @@
+package po1FlowerWreaths;
+
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int wreaths = 0;
+        int storedFlowers = 0;
+
+        // Stack
+        ArrayDeque<Integer> lilies = new ArrayDeque<>();
+        Arrays.stream(scanner.nextLine().split(", "))
+                .map(Integer::parseInt)
+                .forEach(lilies::push);
+
+        // Queue
+        ArrayDeque<Integer> roses = Arrays.stream(scanner.nextLine()
+                .split(", "))
+                .map(Integer::parseInt)
+                .collect(Collectors.toCollection(ArrayDeque::new)); // add()
+
+        while(!lilies.isEmpty() && !roses.isEmpty()){
+            int firstRose = roses.peek();
+            int lastLily = lilies.pop();
+            int sum = firstRose + lastLily;
+            if (sum == 15){
+                roses.poll();
+                wreaths ++;
+            } else if (sum > 15){
+                int currentLili = lastLily - 2;
+                lilies.push(currentLili);
+            } else {
+                roses.poll();
+                storedFlowers += firstRose;
+                storedFlowers += lastLily;
+            }
+        }
+        if (storedFlowers / 15 >= 1){
+            int moreWreaths = storedFlowers / 15;
+            wreaths += moreWreaths;
+        }
+        if (wreaths >= 5){
+            System.out.printf("You made it, you are going to the competition with %d wreaths!",wreaths);
+        } else {
+            System.out.printf("You didn't make it, you need %d wreaths more!",Math.abs(5 - wreaths));
+        }
+
+    }
+}
